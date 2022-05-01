@@ -4,10 +4,11 @@ import { PlaidLink } from "./components/Plaid/PlaidLink";
 function App() {
   const [count, setCount] = useState(0);
   const [token, setToken] = useState("");
+  const [plaidAccessToken, setPlaidAccessToken] = useState("");
 
   useEffect(() => {
     async function fetchToken() {
-      fetch("http://localhost:8080/api/link", {
+      fetch(`${import.meta.env.VITE_SERVER_HOST}/link`, {
         method: "GET",
       })
         .then((res) => res.json())
@@ -26,7 +27,11 @@ function App() {
             count is: {count}
           </button>
         </p>
-        <PlaidLink token={token} userId="123" />
+        <PlaidLink
+          token={token}
+          setPlaidAccessToken={setPlaidAccessToken}
+          userId="123"
+        />
       </header>
     </div>
   );

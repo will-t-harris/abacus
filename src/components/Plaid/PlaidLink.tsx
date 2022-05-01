@@ -10,20 +10,21 @@ import {
   PlaidLinkError,
   PlaidLinkOnExitMetadata,
 } from "react-plaid-link";
-import { useCallback } from "react";
+import { Dispatch, useCallback } from "react";
 
 interface Props {
   token: string;
   userId: string;
+  setPlaidAccessToken: Dispatch<string>;
 }
 
-export function PlaidLink({ token, userId }: Props) {
+export function PlaidLink({ token, userId, setPlaidAccessToken }: Props) {
   const onSuccess = useCallback<PlaidLinkOnSuccess>(
     (public_token: string, metadata: PlaidLinkOnSuccessMetadata) => {
       // log and save metadata
       console.log("METADATA: ", metadata);
       // exchange public token
-      fetch("http://localhost:8080/api/exchange-public-token", {
+      fetch(`${import.meta.env.VITE_SERVER_HOST}/token?token=${public_token}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,7 +33,8 @@ export function PlaidLink({ token, userId }: Props) {
           public_token: public_token,
         }),
       })
-        .then((res) => console.log("RESPONSE: ", res))
+        .then((res) => res.json())
+        .then((data) => setPlaidAccessToken(data.accessToken))
         .catch((error) => console.error(error));
     },
     []
