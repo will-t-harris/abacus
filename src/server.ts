@@ -3,8 +3,8 @@ import helmet from "helmet";
 import "dotenv/config";
 import cors from "cors";
 
-import { logger } from "./logger.js";
-import { router } from "./routes/index.js";
+import { logger } from "./logger";
+import { router } from "./routes";
 
 const app = express();
 

@@ -8,7 +8,7 @@
     "prepare": "husky install",
     "build": "tsc -p tsconfig.json",
     "dev": "vite",
-    "start": "node --es-module-specifier-resolution=node dist/src/server.js"
+    "start": "NODE_ENV=production node --es-module-specifier-resolution=node dist/src/server.js"
   },
   "author": "Will Harris",
   "dependencies": {
