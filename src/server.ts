@@ -4,7 +4,7 @@ import "dotenv/config";
 import cors from "cors";
 
 import { logger } from "./logger";
-import { router } from "./routes/routes";
+import { router } from "./routes";
 
 const app = express();
 
