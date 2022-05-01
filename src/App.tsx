@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { PlaidLink } from "./components/Plaid/PlaidLink";
+import { PlaidLink } from "./components/PlaidLink";
 
 function App() {
   const [count, setCount] = useState(0);
