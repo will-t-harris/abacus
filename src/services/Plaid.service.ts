@@ -1,7 +1,6 @@
 import {
   Configuration,
   CountryCode,
-  InstitutionsGetRequest,
   ItemPublicTokenExchangeRequest,
   LinkTokenCreateRequest,
   PlaidApi,
