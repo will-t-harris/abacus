@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import createError from "http-errors";
 //@ts-ignore
-import { Prisma } from "@prisma/client";
+import pkg from "@prisma/client";
+const { Prisma } = pkg;
 import AuthService from "../services/Auth.service";
 import { logger } from "../logger";
 
