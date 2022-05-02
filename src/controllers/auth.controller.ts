@@ -23,7 +23,7 @@ export async function register(
       message: "User created successfully",
       data: { user },
     });
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       if (error.code === "P2002") {
         logger.info(
