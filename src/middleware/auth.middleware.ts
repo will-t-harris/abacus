@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 import createError from "http-errors";
-import { JwtPayload } from "jsonwebtoken";
 import { verifyToken } from "../shared/jwt";
 
 export async function authMiddleware(

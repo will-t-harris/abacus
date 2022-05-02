@@ -30,9 +30,9 @@ export async function register(
         );
 
         return res.status(400).json({ message: "UNIQUE CONSTRAINT VIOLATION" });
+      } else if (error instanceof Error) {
+        return next(createError(error.message));
       }
-
-      return next(createError(error.message));
     }
   }
 }
