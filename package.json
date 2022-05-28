@@ -1,27 +1,12 @@
 {
-  "name": "finance-client",
-  "private": true,
-  "version": "0.0.0",
+  "name": "abacus",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "prepare": "husky install"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "react": "^17.0.0",
-    "react-dom": "^17.0.2",
-    "react-plaid-link": "^3.3.1",
-    "react-query": "^3.38.1",
-    "react-router-dom": "^6.3.0"
-  },
-  "devDependencies": {
-    "@types/react": "^17.0.0",
-    "@types/react-dom": "^17.0.0",
-    "@vitejs/plugin-react": "^1.3.0",
-    "husky": "^7.0.0",
-    "pretty-quick": "^3.1.3",
-    "typescript": "^4.6.3",
-    "vite": "^2.9.5"
-  }
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }
