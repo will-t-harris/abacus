@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { PlaidLinkOnSuccess, usePlaidLink } from "react-plaid-link";
 import { Button, Spacer } from "@chakra-ui/react";
+import { AppTable } from "../components/AppTable";
+import { PlaidItem } from "../shared/types";
 
 interface Props {
   accessToken: string;
@@ -8,7 +10,7 @@ interface Props {
 
 export function UserDashboard({ accessToken }: Props) {
   const [plaidToken, setPlaidToken] = useState("");
-  const [plaidItems, setPlaidItems] = useState([]);
+  const [plaidItems, setPlaidItems] = useState<PlaidItem[]>([]);
 
   useEffect(() => {
     if (!accessToken) {
@@ -70,7 +72,9 @@ export function UserDashboard({ accessToken }: Props) {
       },
     });
 
-    console.log(await result.json());
+    const institutions: PlaidItem[] = await result.json();
+
+    setPlaidItems([...institutions]);
   }
 
   return (
@@ -83,6 +87,7 @@ export function UserDashboard({ accessToken }: Props) {
       <p>Plaid Token: {plaidToken}</p>
       <Spacer height={6} />
       <Button onClick={fetchPlaidItems}>Fetch Plaid Items</Button>
+      <AppTable institutions={plaidItems} />
     </div>
   );
 }

@@ -4,6 +4,11 @@ export interface User {
   accessToken?: string | null;
 }
 
+export interface PlaidItem {
+  institutionName: string;
+  updatedAt: Date;
+}
+
 export interface RegisterFormValues {
   email: string;
   password: string;
