@@ -2,7 +2,8 @@
 
 ## What is this?
 
-Abacus is a full-stack personal finance application backed by PostgreSQL, Prisma, Node/Express, TypeScript and React. It uses [Vite](https://vitejs.dev/) for lightning-fast local development.
+Abacus is a full-stack personal finance application backed by PostgreSQL, Prisma, Node/Express, TypeScript and React.  
+It uses [Vite](https://vitejs.dev/) for lightning-fast local development.
 
 ## How can I run this?
 
