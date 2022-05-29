@@ -6,7 +6,9 @@ import {
   PlaidApi,
   PlaidEnvironments,
   Products,
+  TransactionsGetRequest,
 } from "plaid";
+import prisma from "../prismaClient";
 
 const {
   PLAID_ENV,
@@ -53,14 +55,74 @@ class PlaidService {
     return { token: token };
   }
 
-  public async exchangePublicToken(token: string) {
+  public async exchangePublicToken({
+    publicToken,
+    institutionName,
+    userId,
+  }: {
+    publicToken: string;
+    institutionName: string;
+    userId: number;
+  }) {
     const request: ItemPublicTokenExchangeRequest = {
-      public_token: token,
+      public_token: publicToken,
     };
 
     const result = await this.client.itemPublicTokenExchange(request);
 
+    await prisma.plaidItem.create({
+      data: {
+        institutionName: institutionName,
+        itemId: result.data.item_id,
+        accessToken: result.data.access_token,
+        user: {
+          connect: {
+            id: userId,
+          },
+        },
+      },
+    });
+
     return { accessToken: result.data.access_token };
+  }
+
+  public async getPlaidItems({ userId }: { userId: number }) {
+    return await prisma.plaidItem.findMany({
+      where: { userId: userId },
+    });
+  }
+
+  public async getTransactions({
+    institutionName,
+    startDate,
+    endDate,
+  }: {
+    institutionName: string;
+    startDate: string;
+    endDate: string;
+  }) {
+    const plaidItem = await prisma.plaidItem.findFirst({
+      where: { userId: 1, institutionName: institutionName },
+    });
+
+    if (!plaidItem) return;
+
+    const request: TransactionsGetRequest = {
+      access_token: plaidItem.accessToken,
+      start_date: startDate,
+      end_date: endDate,
+    };
+
+    try {
+      const result = await this.client.transactionsGet(request);
+
+      console.log("RESULT: ", result);
+
+      return result;
+    } catch (error) {
+      console.error("ERROR: ", error);
+      return;
+    }
   }
 }
 

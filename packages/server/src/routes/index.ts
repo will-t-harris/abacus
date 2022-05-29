@@ -18,6 +18,10 @@ router.get("/all-users", async (_req, res) => {
   res.send(allUsers);
 });
 
-router.get("/link", plaidController.getLinkToken);
+router.get("/token", plaidController.getLinkToken);
 
 router.post("/token", plaidController.exchangePublicToken);
+
+router.get("/transactions", plaidController.getTransactions);
+
+router.get("/items", plaidController.getPlaidItems);

@@ -8,19 +8,20 @@ datasource db {
 }
 
 model User {
-  id        Int        @id @default(autoincrement())
-  email     String     @unique
-  name      String?
-  password  String?
-  PlaidItem PlaidItem?
+  id         Int         @id @default(autoincrement())
+  email      String      @unique
+  name       String?
+  password   String
+  plaidItems PlaidItem[]
 }
 
 model PlaidItem {
-  id          Int      @id @default(autoincrement())
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  name        String
-  accessToken String
-  userId      Int      @unique
-  user        User     @relation(fields: [userId], references: [id])
+  id              Int      @id @default(autoincrement())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  institutionName String
+  accessToken     String
+  itemId          String
+  user            User?    @relation(fields: [userId], references: [id])
+  userId          Int?
 }

@@ -7,7 +7,11 @@ export async function authMiddleware(
   _res: Response,
   next: NextFunction
 ) {
-  if (req.path === "/register" || req.path === "/login") {
+  if (
+    req.path === "/register" ||
+    req.path === "/login" ||
+    req.path === "/health"
+  ) {
     return next();
   }
 

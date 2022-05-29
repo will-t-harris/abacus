@@ -1,6 +1,4 @@
 import { NextFunction, Request, Response } from "express";
-import createError from "http-errors";
-//@ts-ignore
 import pkg from "@prisma/client";
 const { Prisma } = pkg;
 import AuthService from "../services/Auth.service";
@@ -34,7 +32,7 @@ export async function register(
         return res.status(400).json({ message: "UNIQUE CONSTRAINT VIOLATION" });
       }
     } else if (error instanceof Error) {
-      return next(createError(error.message));
+      return next(error);
     }
   }
 }
@@ -52,7 +50,7 @@ export async function login(req: Request, res: Response, next: NextFunction) {
     });
   } catch (error) {
     if (error instanceof Error) {
-      return next(createError(error.message));
+      return next(error);
     }
   }
 }
