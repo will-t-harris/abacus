@@ -10,13 +10,13 @@ import {
   PlaidLinkError,
   PlaidLinkOnExitMetadata,
 } from "react-plaid-link";
-import { Dispatch, useCallback } from "react";
+import { Dispatch, useCallback, SetStateAction } from "react";
 
 interface Props {
   token: string;
   userId: string;
-  setPlaidAccessToken: Dispatch<string>;
-  setInstitutionName: Dispatch<string>;
+  setPlaidAccessToken: Dispatch<SetStateAction<string>>;
+  setInstitutionName: Dispatch<SetStateAction<string>>;
 }
 
 export function PlaidLink({

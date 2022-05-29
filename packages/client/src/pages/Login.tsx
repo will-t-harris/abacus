@@ -1,4 +1,4 @@
-import { Dispatch } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { useForm } from "react-hook-form";
 import styled from "@emotion/styled";
 import { Button } from "@chakra-ui/react";
@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { FormControl, FormLabel, Input } from "@chakra-ui/react";
 
 interface Props {
-  setAccessToken: Dispatch<string>;
+  setAccessToken: Dispatch<SetStateAction<string>>;
 }
 
 export function Login({ setAccessToken }: Props) {

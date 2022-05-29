@@ -1,12 +1,12 @@
 import styled from "@emotion/styled";
-import { Dispatch } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { Link } from "react-router-dom";
 import CookieService from "../services/Cookie/Cookie.service";
 import { CookieKeys } from "../shared/constants";
 
 interface Props {
   accessToken: string;
-  setAccessToken: Dispatch<string>;
+  setAccessToken: Dispatch<SetStateAction<string>>;
 }
 
 export function Navigation({ accessToken, setAccessToken }: Props) {
