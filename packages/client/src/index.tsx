@@ -1,20 +1,26 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
+import { ChakraProvider } from "@chakra-ui/react";
 import App from "./App";
 
 const queryClient = new QueryClient();
 
-ReactDOM.render(
+const container = document.getElementById("root");
+
+const root = createRoot(container!);
+
+root.render(
   <React.StrictMode>
     <BrowserRouter>
       <QueryClientProvider client={queryClient}>
-        <ReactQueryDevtools initialIsOpen={false} />
-        <App />
+        <ChakraProvider>
+          <ReactQueryDevtools initialIsOpen={false} />
+          <App />
+        </ChakraProvider>
       </QueryClientProvider>
     </BrowserRouter>
-  </React.StrictMode>,
-  document.getElementById("root")
+  </React.StrictMode>
 );

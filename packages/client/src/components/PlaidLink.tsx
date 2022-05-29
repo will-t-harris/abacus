@@ -16,15 +16,23 @@ interface Props {
   token: string;
   userId: string;
   setPlaidAccessToken: Dispatch<string>;
+  setInstitutionName: Dispatch<string>;
 }
 
-export function PlaidLink({ token, userId, setPlaidAccessToken }: Props) {
+export function PlaidLink({
+  token,
+  userId,
+  setPlaidAccessToken,
+  setInstitutionName,
+}: Props) {
   const onSuccess = useCallback<PlaidLinkOnSuccess>(
     (public_token: string, metadata: PlaidLinkOnSuccessMetadata) => {
-      // log and save metadata
-      console.log("METADATA: ", metadata);
-      // exchange public token
-      fetch(`${import.meta.env.VITE_SERVER_HOST}/token?token=${public_token}`, {
+      const queryParams = new URLSearchParams({
+        token: public_token,
+        institutionName: metadata.institution?.name ?? "",
+      });
+
+      fetch(`${import.meta.env.VITE_SERVER_HOST}/token?${queryParams}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,7 +42,10 @@ export function PlaidLink({ token, userId, setPlaidAccessToken }: Props) {
         }),
       })
         .then((res) => res.json())
-        .then((data) => setPlaidAccessToken(data.accessToken))
+        .then((data) => {
+          setPlaidAccessToken(data.accessToken);
+          setInstitutionName(metadata.institution?.name ?? "");
+        })
         .catch((error) => console.error(error));
     },
     []
@@ -42,12 +53,10 @@ export function PlaidLink({ token, userId, setPlaidAccessToken }: Props) {
 
   const onExit = useCallback<PlaidLinkOnExit>(
     (error: PlaidLinkError | null, metadata: PlaidLinkOnExitMetadata) => {
-      // log and save error and metadata
-      console.log("METADATA: ", metadata);
-      console.error("ERROR: ", error);
-      // handle invalid link token
+      console.log("EXIT METADATA: ", metadata);
+
       if (error !== null && error.error_code === "INVALID_LINK_TOKEN") {
-        // generate a new link token
+        //TODO generate a new link token
       }
 
       // to handle other error codes see: https://plaid.com/docs/errors
@@ -59,13 +68,16 @@ export function PlaidLink({ token, userId, setPlaidAccessToken }: Props) {
       eventName: PlaidLinkStableEvent | string,
       metadata: PlaidLinkOnEventMetadata
     ) => {
-      // log eventName and metadata
-      console.log("EVENT NAME: ", eventName);
-      console.log("METADATA: ", metadata);
+      //TODO do we need to respond to any events?
+      switch (eventName) {
+        default: {
+          break;
+        }
+      }
     },
     []
   );
-  // log eventName and metadata
+
   const config: PlaidLinkOptions = {
     onSuccess: onSuccess,
     onExit: onExit,
@@ -77,7 +89,7 @@ export function PlaidLink({ token, userId, setPlaidAccessToken }: Props) {
   return (
     <div>
       <p>PlaidLink</p>
-      <button onClick={() => open()}>Open</button>
+      <button onClick={() => ready && open()}>Open</button>
     </div>
   );
 }
