@@ -1,4 +1,4 @@
-# Abacus Server 🧮
+# Abacus Client 🧮
 
 ## Installation
 
