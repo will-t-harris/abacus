@@ -17,11 +17,11 @@ To install dependencies, run `npm install` at the project root.
 
 Add the following values to a `.env` file in each package root.
 
-### Client
+### Frontend
 
 `VITE_SERVER_HOST`: The URI + port for the backend server.
 
-### Server
+### Backend
 
 `DATABASE_URL`: The database connection URL (postgreSQL).  
 `JWT_SECRET`: JWT secret key.  
