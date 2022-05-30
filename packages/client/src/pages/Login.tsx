@@ -13,11 +13,7 @@ interface Props {
 
 export function Login({ setAccessToken }: Props) {
   const navigate = useNavigate();
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm<{
+  const { handleSubmit, register } = useForm<{
     email: string;
     password: string;
   }>();
@@ -32,10 +28,10 @@ export function Login({ setAccessToken }: Props) {
     })
       .then((res) => res.json())
       //TODO type this
-      .then(({ data: { user } }) => {
-        CookieService.setCookie(CookieKeys.AccessToken, user.accessToken);
+      .then(({ data: { accessToken } }) => {
+        CookieService.setCookie(CookieKeys.AccessToken, accessToken);
 
-        setAccessToken(user.accessToken);
+        setAccessToken(accessToken);
 
         navigate("/", { replace: true });
       })
