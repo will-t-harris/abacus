@@ -1,11 +1,13 @@
+import { createServer } from "@graphql-yoga/node";
 import express from "express";
 import helmet from "helmet";
 import "dotenv/config";
 import cors from "cors";
 import expressPino from "express-pino-logger";
 
-import { logger } from "./logger";
-import { router } from "./routes";
+import { logger } from "./logger.js";
+import { router } from "./routes/index.js";
+import { schema } from "./graphql/schema.js";
 
 declare global {
   namespace Express {
@@ -19,9 +21,16 @@ declare global {
   }
 }
 
+const yogaServer = createServer({
+  port: Number(process.env.PORT) || 8080,
+  schema: schema,
+});
+
 const app = express();
 const PORT = process.env.PORT || "8080";
 const expressLogger = expressPino();
+
+app.use("/graphql", yogaServer);
 
 app.use(cors());
 app.use(helmet());
@@ -34,13 +43,6 @@ app.get("/health", (_req, res) => {
 
 app.use("/api", router);
 
-if (process.env.NODE_ENV === "production") {
-  app.listen(PORT, () => {
-    logger.info(`Server listening at port ${PORT}.`);
-  });
-}
-
-// Run the app with vite if not in production
-// If there were a staging deployment, we'd want
-// to not use vite for that either.
-export const viteNodeApp = app;
+app.listen(PORT, () => {
+  logger.info(`Server listening at port ${PORT}.`);
+});
