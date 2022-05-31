@@ -21,28 +21,30 @@ declare global {
   }
 }
 
+const PORT = process.env.PORT || "8080";
 const yogaServer = createServer({
   port: Number(process.env.PORT) || 8080,
   schema: schema,
+  //TODO add user id to context
+  // context: async ({ req }) => ({
+  //   id: await getUserIdFromJWT(req.headers.authorization),
+  // }),
 });
-
-const app = express();
-const PORT = process.env.PORT || "8080";
 const expressLogger = expressPino();
+const app = express();
 
-app.use("/graphql", yogaServer);
+app.use("/api/graphql", yogaServer);
+app.get("/health", (_req, res) => {
+  res.send();
+});
+app.use("/api", router);
 
 app.use(cors());
 app.use(helmet());
 app.use(expressLogger);
 app.use(express.json());
 
-app.get("/health", (_req, res) => {
-  res.send();
-});
-
-app.use("/api", router);
-
 app.listen(PORT, () => {
   logger.info(`Server listening at port ${PORT}.`);
+  logger.info(`GraphQL API available at <host>:${PORT}/api/graphql`);
 });
