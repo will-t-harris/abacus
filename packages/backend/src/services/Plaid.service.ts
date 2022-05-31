@@ -8,7 +8,7 @@ import {
   Products,
   TransactionsGetRequest,
 } from "plaid";
-import prisma from "../prismaClient";
+import prisma from "../prismaClient.js";
 
 const {
   PLAID_ENV,

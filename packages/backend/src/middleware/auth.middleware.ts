@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import createError from "http-errors";
-import { verifyToken } from "../shared/jwt";
+import { verifyToken } from "../shared/jwt.js";
 
 export async function authMiddleware(
   req: Request,
@@ -10,7 +10,8 @@ export async function authMiddleware(
   if (
     req.path === "/register" ||
     req.path === "/login" ||
-    req.path === "/health"
+    req.path === "/health" ||
+    req.path === "/graphql"
   ) {
     return next();
   }

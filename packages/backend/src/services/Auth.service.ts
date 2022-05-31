@@ -1,7 +1,7 @@
-import prisma from "../prismaClient";
+import prisma from "../prismaClient.js";
 import bcrypt from "bcryptjs";
 import createError from "http-errors";
-import { signToken } from "../shared/jwt";
+import { signToken } from "../shared/jwt.js";
 
 class AuthService {
   public async register({

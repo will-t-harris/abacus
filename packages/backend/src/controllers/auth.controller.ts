@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import pkg from "@prisma/client";
 const { Prisma } = pkg;
-import AuthService from "../services/Auth.service";
-import { logger } from "../logger";
+import AuthService from "../services/Auth.service.js";
+import { logger } from "../logger.js";
 
 export async function register(
   req: Request,

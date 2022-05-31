@@ -1,8 +1,8 @@
 import express from "express";
-import prisma from "../prismaClient";
+import prisma from "../prismaClient.js";
 import * as plaidController from "../controllers/plaid.controller.js";
 import { authMiddleware } from "../middleware/auth.middleware.js";
-import * as authController from "../controllers/auth.controller";
+import * as authController from "../controllers/auth.controller.js";
 
 export const router = express.Router();
 

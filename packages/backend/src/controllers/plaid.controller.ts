@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import PlaidService from "../services/Plaid.service";
-import { isString } from "../shared/utils";
-import { ExchangeTokenRequest } from "../types";
+import PlaidService from "../services/Plaid.service.js";
+import { isString } from "../shared/utils.js";
+import { ExchangeTokenRequest } from "../types/index.js";
 
 export async function getLinkToken(_req: Request, res: Response) {
   const result = await PlaidService.getLinkToken();
