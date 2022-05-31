@@ -27,8 +27,7 @@
     "nanoid": "^3.3.3",
     "npm": "^8.8.0",
     "pino": "^7.11.0",
-    "plaid": "^10.3.0",
-    "ts-node": "^10.7.0"
+    "plaid": "^10.3.0"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
