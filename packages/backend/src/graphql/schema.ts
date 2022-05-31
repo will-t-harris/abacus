@@ -27,7 +27,7 @@ builder.prismaObject("PlaidItem", {
   findUnique: (plaidItem) => ({ id: plaidItem.id }),
   fields: (t) => ({
     id: t.exposeID("id"),
-    name: t.exposeString("institutionName"),
+    institutionName: t.exposeString("institutionName"),
   }),
 });
 
@@ -35,11 +35,17 @@ builder.queryType({
   fields: (t) => ({
     user: t.prismaField({
       type: "User",
-      resolve: async (query) =>
-        PrismaClient.user.findUnique({
+      args: {
+        email: t.arg({
+          type: "String",
+          required: true,
+        }),
+      },
+      resolve: async (query, _root, args) =>
+        prisma.user.findUnique({
           ...query,
           rejectOnNotFound: true,
-          where: { id: 1 },
+          where: { email: args.email },
         }),
     }),
     plaidItem: t.prismaField({
