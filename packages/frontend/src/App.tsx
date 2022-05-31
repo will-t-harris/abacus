@@ -12,7 +12,7 @@ function App() {
 
   useEffect(() => {
     setAccessToken(CookieService.getCookie(CookieKeys.AccessToken) ?? "");
-  });
+  }, []);
 
   return (
     <main>
