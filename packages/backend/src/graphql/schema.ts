@@ -3,7 +3,10 @@ import PrismaClient from "../prismaClient.js";
 import PrismaPlugin from "@pothos/plugin-prisma";
 import type PrismaTypes from "@pothos/plugin-prisma/generated";
 
-const builder = new SchemaBuilder<{ PrismaTypes: PrismaTypes }>({
+const builder = new SchemaBuilder<{
+  Context: { user: { id: number } };
+  PrismaTypes: PrismaTypes;
+}>({
   plugins: [PrismaPlugin],
   prisma: {
     client: PrismaClient,
@@ -19,6 +22,15 @@ builder.prismaObject("User", {
   }),
 });
 
+builder.prismaObject("PlaidItem", {
+  name: "PlaidItem",
+  findUnique: (plaidItem) => ({ id: plaidItem.id }),
+  fields: (t) => ({
+    id: t.exposeID("id"),
+    name: t.exposeString("institutionName"),
+  }),
+});
+
 builder.queryType({
   fields: (t) => ({
     user: t.prismaField({
@@ -28,6 +40,21 @@ builder.queryType({
           ...query,
           rejectOnNotFound: true,
           where: { id: 1 },
+        }),
+    }),
+    plaidItem: t.prismaField({
+      type: "PlaidItem",
+      args: {
+        id: t.arg({
+          type: "Int",
+          required: true,
+        }),
+      },
+      resolve: async (query, _root, args) =>
+        PrismaClient.plaidItem.findUnique({
+          ...query,
+          rejectOnNotFound: true,
+          where: { id: args.id },
         }),
     }),
   }),
