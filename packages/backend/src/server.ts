@@ -34,11 +34,12 @@ const expressLogger = expressPino();
 const app = express();
 
 app.use(cors());
+app.use("/api/graphql", yogaServer);
+// helmet must come after graphql-yoga
 app.use(helmet());
 app.use(expressLogger);
 app.use(express.json());
 
-app.use("/api/graphql", yogaServer);
 app.get("/health", (_req, res) => {
   res.send();
 });
@@ -46,5 +47,4 @@ app.use("/api", router);
 
 app.listen(PORT, () => {
   logger.info(`Server listening at port ${PORT}.`);
-  logger.info(`GraphQL API available at <host>:${PORT}/api/graphql`);
 });
