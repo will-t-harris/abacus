@@ -64,17 +64,32 @@ export function UserDashboard({ accessToken }: Props) {
   });
 
   async function fetchPlaidItems() {
-    const result = await fetch(`${import.meta.env.VITE_SERVER_HOST}/items`, {
-      method: "GET",
+    const result = await fetch(`${import.meta.env.VITE_SERVER_HOST}/graphql`, {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        query: `
+          query GetPlaidItems($userId: Int!) {
+            getPlaidItems(userId: $userId) {
+              institutionName
+              updatedAt
+            }
+          }
+        `,
+        variables: {
+          userId: 1,
+        },
+      }),
     });
 
-    const institutions: PlaidItem[] = await result.json();
+    const {
+      data: { getPlaidItems },
+    }: { data: { getPlaidItems: PlaidItem[] } } = await result.json();
 
-    setPlaidItems([...institutions]);
+    setPlaidItems([...getPlaidItems]);
   }
 
   return (

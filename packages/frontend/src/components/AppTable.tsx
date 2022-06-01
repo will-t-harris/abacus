@@ -24,8 +24,8 @@ export function AppTable({ institutions }: Props) {
           </Tr>
         </Thead>
         <Tbody>
-          {institutions.map(({ updatedAt, institutionName }) => (
-            <Tr key={updatedAt.toString()}>
+          {institutions.map(({ updatedAt, institutionName }, index) => (
+            <Tr key={`${institutionName}-${index}`}>
               <Td>{institutionName}</Td>
               <Td>{updatedAt.toString()}</Td>
             </Tr>

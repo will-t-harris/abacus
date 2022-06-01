@@ -2,9 +2,16 @@ import SchemaBuilder from "@pothos/core";
 import prisma from "../prismaClient.js";
 import PrismaPlugin from "@pothos/plugin-prisma";
 import type PrismaTypes from "@pothos/plugin-prisma/generated";
+import { DateResolver } from "graphql-scalars";
 
 const builder = new SchemaBuilder<{
   Context: { user: { id: number } };
+  Scalars: {
+    Date: {
+      Input: Date;
+      Output: Date;
+    };
+  };
   PrismaTypes: PrismaTypes;
 }>({
   plugins: [PrismaPlugin],
@@ -12,6 +19,8 @@ const builder = new SchemaBuilder<{
     client: prisma,
   },
 });
+
+builder.addScalarType("Date", DateResolver, {});
 
 builder.prismaObject("User", {
   name: "User",
@@ -28,12 +37,13 @@ builder.prismaObject("PlaidItem", {
   fields: (t) => ({
     id: t.exposeID("id"),
     institutionName: t.exposeString("institutionName"),
+    updatedAt: t.expose("updatedAt", { type: "Date" }),
   }),
 });
 
 builder.queryType({
   fields: (t) => ({
-    user: t.prismaField({
+    getUser: t.prismaField({
       type: "User",
       args: {
         email: t.arg({
@@ -41,14 +51,17 @@ builder.queryType({
           required: true,
         }),
       },
-      resolve: async (query, _root, args) =>
-        prisma.user.findUnique({
+      resolve: async (query, _root, args) => {
+        const user = await prisma.user.findUnique({
           ...query,
           rejectOnNotFound: true,
           where: { email: args.email },
-        }),
+        });
+
+        return user;
+      },
     }),
-    plaidItem: t.prismaField({
+    getPlaidItem: t.prismaField({
       type: "PlaidItem",
       args: {
         id: t.arg({
@@ -56,12 +69,32 @@ builder.queryType({
           required: true,
         }),
       },
-      resolve: async (query, _root, args) =>
-        prisma.plaidItem.findUnique({
+      resolve: async (query, _root, args) => {
+        const plaidItem = await prisma.plaidItem.findUnique({
           ...query,
           rejectOnNotFound: true,
           where: { id: args.id },
+        });
+
+        return plaidItem;
+      },
+    }),
+    getPlaidItems: t.prismaField({
+      type: ["PlaidItem"],
+      args: {
+        userId: t.arg({
+          type: "Int",
+          required: true,
         }),
+      },
+      resolve: async (query, _root, args) => {
+        const plaidItems = await prisma.plaidItem.findMany({
+          ...query,
+          where: { userId: args.userId },
+        });
+
+        return plaidItems;
+      },
     }),
   }),
 });
