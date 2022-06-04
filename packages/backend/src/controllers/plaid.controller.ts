@@ -28,26 +28,6 @@ export async function exchangePublicToken(
   return res.send(result);
 }
 
-export async function getTransactions(req: Request, res: Response) {
-  const { institutionName } = req.query;
-
-  if (!institutionName) {
-    return res.status(400).send();
-  }
-
-  const result = await PlaidService.getTransactions({
-    institutionName: institutionName as string,
-    startDate: "2021-01-01",
-    endDate: "2022-01-01",
-  });
-
-  if (!result) {
-    return res.status(404).send();
-  }
-
-  return res.send(result.data.transactions);
-}
-
 export async function getPlaidItems(_req: Request, res: Response) {
   const result = await PlaidService.getPlaidItems({ userId: 1 });
 
