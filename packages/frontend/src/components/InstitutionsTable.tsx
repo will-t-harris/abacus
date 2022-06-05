@@ -13,7 +13,7 @@ interface Props {
   institutions: PlaidItem[];
 }
 
-export function AppTable({ institutions }: Props) {
+export function InstitutionsTable({ institutions }: Props) {
   return (
     <TableContainer width="600px">
       <Table size="sm">
