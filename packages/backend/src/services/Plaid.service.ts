@@ -1,4 +1,5 @@
 import {
+  AccountsGetRequest,
   Configuration,
   CountryCode,
   ItemPublicTokenExchangeRequest,
@@ -92,23 +93,29 @@ class PlaidService {
     });
   }
 
+  public async getAccountsForItem({ accessToken }: { accessToken: string }) {
+    const request: AccountsGetRequest = {
+      access_token: accessToken,
+    };
+
+    const {
+      data: { accounts },
+    } = await this.client.accountsGet(request);
+
+    return accounts;
+  }
+
   public async getTransactions({
-    institutionName,
+    accessToken,
     startDate,
     endDate,
   }: {
-    institutionName: string;
+    accessToken: string;
     startDate: string;
     endDate: string;
   }) {
-    const plaidItem = await prisma.plaidItem.findFirst({
-      where: { userId: 1, institutionName: institutionName },
-    });
-
-    if (!plaidItem) return;
-
     const request: TransactionsGetRequest = {
-      access_token: plaidItem.accessToken,
+      access_token: accessToken,
       start_date: startDate,
       end_date: endDate,
     };
