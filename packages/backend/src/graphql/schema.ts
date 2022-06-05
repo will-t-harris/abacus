@@ -129,6 +129,13 @@ builder.mutationType({
           where: { userId: 1, institutionName: input.institutionName },
         });
 
+        const previousAccounts = await prisma.account.count({
+          where: { plaidItemId: plaidItem.id },
+        });
+
+        if (previousAccounts) {
+          throw new Error("Accounts previously saved for this item.");
+        }
         const accounts = await PlaidService.getAccountsForItem({
           accessToken: plaidItem.accessToken,
         });
