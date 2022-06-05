@@ -5,6 +5,7 @@ export interface User {
 }
 
 export interface PlaidItem {
+  itemId: string;
   institutionName: string;
   updatedAt: Date;
 }

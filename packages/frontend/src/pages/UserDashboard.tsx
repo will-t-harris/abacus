@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { PlaidLinkOnSuccess, usePlaidLink } from "react-plaid-link";
-import { Button, Spacer } from "@chakra-ui/react";
-import { AppTable } from "../components/AppTable";
+import { Button, Select, Spacer } from "@chakra-ui/react";
+import { InstitutionsTable } from "../components/InstitutionsTable";
 import { PlaidItem } from "../shared/types";
 
 interface Props {
@@ -11,6 +11,7 @@ interface Props {
 export function UserDashboard({ accessToken }: Props) {
   const [plaidToken, setPlaidToken] = useState("");
   const [plaidItems, setPlaidItems] = useState<PlaidItem[]>([]);
+  const selectInstitutionRef = useRef<HTMLSelectElement>(null);
 
   useEffect(() => {
     if (!accessToken) {
@@ -18,17 +19,17 @@ export function UserDashboard({ accessToken }: Props) {
     }
 
     async function createLinkToken() {
-      const response = await fetch(
-        `${import.meta.env.VITE_SERVER_HOST}/token`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
-
       try {
+        const response = await fetch(
+          `${import.meta.env.VITE_SERVER_HOST}/token`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+
         const { token } = await response.json();
 
         setPlaidToken(token);
@@ -42,18 +43,22 @@ export function UserDashboard({ accessToken }: Props) {
 
   const onPlaidSuccess = useCallback<PlaidLinkOnSuccess>(
     async (publicToken, metadata) => {
-      // send public_token to server
-      await fetch(`${import.meta.env.VITE_SERVER_HOST}/token`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          publicToken: publicToken,
-          institutionName: metadata.institution?.name,
-        }),
-      });
+      try {
+        // send public_token to server
+        await fetch(`${import.meta.env.VITE_SERVER_HOST}/token`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            publicToken: publicToken,
+            institutionName: metadata.institution?.name,
+          }),
+        });
+      } catch (error) {
+        console.error("ERROR: ", error);
+      }
     },
     []
   );
@@ -64,32 +69,77 @@ export function UserDashboard({ accessToken }: Props) {
   });
 
   async function fetchPlaidItems() {
-    const result = await fetch(`${import.meta.env.VITE_SERVER_HOST}/graphql`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        query: `
-          query GetPlaidItems($userId: Int!) {
-            getPlaidItems(userId: $userId) {
+    try {
+      const result = await fetch(
+        `${import.meta.env.VITE_SERVER_HOST}/graphql`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            query: `
+          query GetPlaidItems($input: GetPlaidItemsInput!) {
+            getPlaidItems(input: $input) {
+              itemId
               institutionName
               updatedAt
             }
           }
         `,
-        variables: {
-          userId: 1,
+            variables: {
+              input: {
+                userId: 1,
+              },
+            },
+          }),
+        }
+      );
+
+      const {
+        data: { getPlaidItems },
+      }: { data: { getPlaidItems: PlaidItem[] } } = await result.json();
+
+      setPlaidItems([...getPlaidItems]);
+    } catch (error) {
+      console.error("ERROR: ", error);
+    }
+  }
+
+  async function saveAccountsForItem() {
+    if (!selectInstitutionRef.current?.value) {
+      console.log("No ref value.");
+      return;
+    }
+
+    const selectedItem = plaidItems[Number(selectInstitutionRef.current.value)];
+
+    try {
+      await fetch(`${import.meta.env.VITE_SERVER_HOST}/graphql`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
-      }),
-    });
-
-    const {
-      data: { getPlaidItems },
-    }: { data: { getPlaidItems: PlaidItem[] } } = await result.json();
-
-    setPlaidItems([...getPlaidItems]);
+        body: JSON.stringify({
+          query: `
+          mutation CreateAccounts($input: CreateAccountsInput!) {
+            createAccounts(input: $input) {
+              id
+            }
+          }
+        `,
+          variables: {
+            input: {
+              institutionName: selectedItem.institutionName,
+            },
+          },
+        }),
+      });
+    } catch (error) {
+      console.error("ERROR: ", error);
+    }
   }
 
   return (
@@ -102,7 +152,18 @@ export function UserDashboard({ accessToken }: Props) {
       <p>Plaid Token: {plaidToken}</p>
       <Spacer height={6} />
       <Button onClick={fetchPlaidItems}>Fetch Plaid Items</Button>
-      <AppTable institutions={plaidItems} />
+      <Spacer height={6} />
+      <InstitutionsTable institutions={plaidItems} />
+      <Spacer height={6} borderBottom="2px solid rebeccapurple" mb="6" />
+      <Select ref={selectInstitutionRef} width="600px" mb="6">
+        {plaidItems.length !== 0 &&
+          plaidItems.map((plaidItem, index) => (
+            <option value={index} key={plaidItem.institutionName}>
+              {plaidItem.institutionName}
+            </option>
+          ))}
+      </Select>
+      <Button onClick={saveAccountsForItem}>Save Accounts for Item</Button>
     </div>
   );
 }
