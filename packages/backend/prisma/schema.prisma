@@ -36,29 +36,19 @@ model PlaidItem {
 }
 
 model Account {
-  id        Int              @id @default(autoincrement())
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @updatedAt
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   accountId String
   name      String
   type      String
-  balances  AccountBalance[]
 
   plaidItem   PlaidItem @relation(fields: [plaidItemId], references: [id])
   plaidItemId Int
 }
 
-model AccountBalance {
-  id                     Int      @id @default(autoincrement())
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
-  available              Int?
-  current                Int?
-  limit                  Int?
-  isoCurrencyCode        String?
-  unofficialCurrencyCode String?
-  lastUpdatedDateTime    String?
-
-  account   Account @relation(fields: [accountId], references: [id])
-  accountId Int
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

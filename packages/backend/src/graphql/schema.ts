@@ -4,6 +4,7 @@ import { builder } from "./builder.js";
 import {
   CreateAccountsInput,
   CreatePlaidItemInput,
+  FetchTransactionsForAccountInput,
   GetPlaidItemInput,
   GetPlaidItemsInput,
   GetUserInput,
@@ -35,6 +36,14 @@ builder.prismaObject("PlaidItem", {
 builder.prismaObject("Account", {
   name: "Account",
   findUnique: (account) => ({ id: account.id }),
+  fields: (t) => ({
+    id: t.exposeID("id"),
+  }),
+});
+
+builder.prismaObject("Transaction", {
+  name: "Transaction",
+  findUnique: (transaction) => ({ id: transaction.id }),
   fields: (t) => ({
     id: t.exposeID("id"),
   }),
@@ -156,6 +165,22 @@ builder.mutationType({
             })
           )
         );
+      },
+    }),
+    fetchTransactionsForAccount: t.prismaField({
+      type: ["Transaction"],
+      args: {
+        input: t.arg({
+          type: FetchTransactionsForAccountInput,
+          required: true,
+        }),
+      },
+      resolve: async (_query, _root, _args) => {
+        const transaction = await prisma.transaction.findFirst();
+
+        if (!transaction) throw new Error();
+
+        return [transaction];
       },
     }),
   }),

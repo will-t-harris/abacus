@@ -31,3 +31,12 @@ export const CreateAccountsInput = builder.inputType("CreateAccountsInput", {
     institutionName: t.string({ required: true }),
   }),
 });
+
+export const FetchTransactionsForAccountInput = builder.inputType(
+  "FetchTransactionsForAccountInput",
+  {
+    fields: (t) => ({
+      accountId: t.string({ required: true }),
+    }),
+  }
+);
