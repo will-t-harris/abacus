@@ -124,12 +124,12 @@ export function UserDashboard({ accessToken }: Props) {
         },
         body: JSON.stringify({
           query: `
-          mutation CreateAccounts($input: CreateAccountsInput!) {
-            createAccounts(input: $input) {
-              id
+            mutation CreateAccounts($input: CreateAccountsInput!) {
+              createAccounts(input: $input) {
+                id
+              }
             }
-          }
-        `,
+          `,
           variables: {
             input: {
               institutionName: selectedItem.institutionName,
@@ -137,6 +137,41 @@ export function UserDashboard({ accessToken }: Props) {
           },
         }),
       });
+    } catch (error) {
+      console.error("ERROR: ", error);
+    }
+  }
+
+  async function fetchTransactionsForAccount() {
+    console.log("fetchTransactionsForAccount");
+    try {
+      const result = await fetch(
+        `${import.meta.env.VITE_SERVER_HOST}/graphql`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            query: `
+            mutation FetchTransactionsForAccount($input: FetchTransactionsForAccountInput!) {
+              fetchTransactionsForAccount(input: $input) {
+                id
+              }
+            }
+          `,
+            variables: {
+              input: {
+                accountId: 4,
+              },
+            },
+          }),
+        }
+      );
+
+      const data = await result.json();
+
+      console.log("HERE BE DATA: ", data);
     } catch (error) {
       console.error("ERROR: ", error);
     }
@@ -164,6 +199,9 @@ export function UserDashboard({ accessToken }: Props) {
           ))}
       </Select>
       <Button onClick={saveAccountsForItem}>Save Accounts for Item</Button>
+      <Button onClick={fetchTransactionsForAccount}>
+        Fetch Transactions for Selected Account
+      </Button>
     </div>
   );
 }
