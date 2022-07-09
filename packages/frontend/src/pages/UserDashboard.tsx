@@ -151,6 +151,7 @@ export function UserDashboard({ accessToken }: Props) {
           method: "POST",
           headers: {
             Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             query: `
@@ -162,7 +163,7 @@ export function UserDashboard({ accessToken }: Props) {
           `,
             variables: {
               input: {
-                accountId: 4,
+                accountId: "4",
               },
             },
           }),

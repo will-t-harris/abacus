@@ -178,8 +178,6 @@ builder.mutationType({
       resolve: async (_query, _root, _args) => {
         const transaction = await prisma.transaction.findFirst();
 
-        if (!transaction) throw new Error();
-
         return [transaction];
       },
     }),
