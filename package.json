@@ -11,7 +11,8 @@
   "keywords": [],
   "author": "Will Harris <will@willharris.dev>",
   "workspaces": [
-    "packages/*"
+    "packages/backend",
+    "packages/frontend"
   ],
   "devDependencies": {
     "turbo": "^1.2.14"
